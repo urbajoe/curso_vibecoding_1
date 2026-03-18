@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding — O Futuro do Desenvolvimento</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Cabinet+Grotesk:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050810;
+    --surface: #0c1120;
+    --card: #111827;
+    --border: #1e2d4a;
+    --accent: #00f5c4;
+    --accent2: #7b61ff;
+    --accent3: #ff6b6b;
+    --text: #e8edf5;
+    --muted: #6b7fa3;
+    --glow: 0 0 40px rgba(0,245,196,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 40px;
+    background: rgba(5,8,16,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(30,45,74,0.5);
+    transition: all 0.3s;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.3rem;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo span { color: var(--text); }
+  .nav-links {
+    display: flex; gap: 0; list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 8px 18px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); background: rgba(255,255,255,0.05); }
+  .nav-cta {
+    background: var(--accent);
+    color: #000 !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    padding: 8px 20px !important;
+  }
+  .nav-cta:hover { background: #00dbb0 !important; transform: translateY(-1px); }
+
+  /* ─── PAGES ─── */
+  .page { display: none; animation: fadeIn 0.4s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ─── HERO ─── */
+  #page-home {
+    min-height: 100vh;
+    padding-top: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 60% 20%, rgba(0,245,196,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% 80%, rgba(123,97,255,0.08) 0%, transparent 60%);
+  }
+  .grid-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(30,45,74,0.25) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,45,74,0.25) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-inner {
+    max-width: 1100px; margin: 0 auto;
+    padding: 80px 40px 60px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; align-items: center;
+    position: relative; z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,245,196,0.1);
+    border: 1px solid rgba(0,245,196,0.25);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; font-weight: 500;
+    padding: 6px 14px; border-radius: 100px;
+    margin-bottom: 24px;
+    letter-spacing: 0.04em;
+  }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 4vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 36px;
+  }
+
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 50px; }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 14px 28px;
+    border-radius: 10px;
+    border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+    font-family: 'Cabinet Grotesk', sans-serif;
+  }
+  .btn-primary:hover { background: #00dbb0; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,245,196,0.3); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 14px 28px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+    font-family: 'Cabinet Grotesk', sans-serif;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+  .hero-stats {
+    display: flex; gap: 32px;
+  }
+  .stat-item { }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem; font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
+
+  /* Hero Visual */
+  .hero-visual {
+    position: relative;
+  }
+  .code-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), var(--glow);
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  .code-bar {
+    background: var(--surface);
+    padding: 12px 18px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #febc2e; }
+  .dot.g { background: #28c840; }
+  .code-file { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  .code-body {
+    padding: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.8;
+  }
+  .code-body .c-comment { color: #4a6080; }
+  .code-body .c-keyword { color: var(--accent2); }
+  .code-body .c-string { color: var(--accent); }
+  .code-body .c-func { color: #ff9d6c; }
+  .code-body .c-var { color: var(--text); }
+
+  .floating-tag {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 0.8rem;
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .tag1 { top: -20px; right: -20px; animation: float 5s 1s ease-in-out infinite; }
+  .tag2 { bottom: 30px; left: -30px; animation: float 7s 0.5s ease-in-out infinite; }
+  .tag-icon { font-size: 1.1rem; }
+  .tag-text { color: var(--muted); }
+  .tag-text strong { color: var(--text); display: block; }
+
+  /* ─── BENEFITS ─── */
+  .section {
+    max-width: 1100px; margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::before { content: '//'; opacity: 0.5; }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 50px;
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .benefit-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .benefit-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,245,196,0.04), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .benefit-card:hover { border-color: rgba(0,245,196,0.3); transform: translateY(-4px); }
+  .benefit-card:hover::before { opacity: 1; }
+  .benefit-icon {
+    width: 44px; height: 44px;
+    background: rgba(0,245,196,0.1);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 18px;
+  }
+  .benefit-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .benefit-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+  /* ─── MODULES ─── */
+  .modules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .module-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .module-card:hover { border-color: rgba(123,97,255,0.4); transform: translateY(-3px); }
+  .module-header {
+    display: flex; align-items: flex-start; gap: 16px;
+    margin-bottom: 16px;
+  }
+  .module-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent2);
+    background: rgba(123,97,255,0.12);
+    border: 1px solid rgba(123,97,255,0.2);
+    padding: 4px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    margin-top: 3px;
+  }
+  .module-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem; font-weight: 700;
+  }
+  .module-card .module-theme {
+    font-size: 0.82rem; color: var(--muted);
+    margin-top: 2px;
+    font-style: italic;
+  }
+  .module-lessons {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .module-lessons li {
+    font-size: 0.85rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .module-lessons li::before {
+    content: '→';
+    color: var(--accent);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+  .module-extras {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .extra-chip {
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: rgba(0,245,196,0.08);
+    border: 1px solid rgba(0,245,196,0.15);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  /* ─── INSTRUCTOR ─── */
+  .instructor-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  .instructor-avatar {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 40px rgba(0,245,196,0.3);
+  }
+  .instructor-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem; font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .instructor-role {
+    color: var(--accent); font-size: 0.88rem; font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .instructor-bio {
+    color: var(--muted); font-size: 0.92rem; line-height: 1.7;
+  }
+
+  /* ─── LOGIN PAGE ─── */
+  #page-login {
+    min-height: 100vh;
+    padding-top: 80px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .login-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(123,97,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .auth-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px;
+    width: 100%; max-width: 440px;
+    position: relative; z-index: 1;
+  }
+  .auth-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .auth-card h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.7rem; font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .auth-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 32px; }
+
+  .form-group { margin-bottom: 20px; }
+  .form-group label {
+    display: block;
+    font-size: 0.83rem; font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .form-group input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    outline: none;
+  }
+  .form-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,245,196,0.1);
+  }
+  .form-group input::placeholder { color: var(--muted); }
+
+  .form-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.85rem; color: var(--muted);
+  }
+  .form-footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .form-footer a:hover { text-decoration: underline; }
+
+  .divider {
+    display: flex; align-items: center; gap: 16px;
+    margin: 24px 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-text { color: var(--muted); font-size: 0.8rem; }
+
+  .social-btn {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px;
+    color: var(--text);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 0.9rem; font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: all 0.2s;
+  }
+  .social-btn:hover { border-color: var(--muted); transform: translateY(-1px); }
+
+  .tabs {
+    display: flex; gap: 0;
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 9px;
+    border: none; border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 0.88rem; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active { background: var(--card); color: var(--text); }
+
+  /* ─── DASHBOARD ─── */
+  #page-dashboard {
+    min-height: 100vh;
+    padding-top: 80px;
+  }
+  .dashboard-inner {
+    max-width: 1100px; margin: 0 auto;
+    padding: 40px;
+  }
+  .dashboard-header {
+    margin-bottom: 40px;
+  }
+  .dashboard-header .greeting {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+  .dashboard-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .dashboard-header p { color: var(--muted); }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .dash-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+  }
+  .dash-card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem; font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+  }
+
+  .progress-ring {
+    display: flex; align-items: center; gap: 24px;
+    margin-bottom: 20px;
+  }
+  .ring-wrap {
+    position: relative; width: 80px; height: 80px; flex-shrink: 0;
+  }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+  .ring-fill { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 220; stroke-dashoffset: 154; transition: stroke-dashoffset 1s; }
+  .ring-text {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem; font-weight: 800;
+    color: var(--accent);
+  }
+  .progress-info h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem; font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .progress-info p { color: var(--muted); font-size: 0.85rem; }
+
+  .continue-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), #00c8a8);
+    color: #000;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700; font-size: 0.92rem;
+    padding: 13px;
+    border: none; border-radius: 10px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.2s;
+  }
+  .continue-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,245,196,0.3); }
+
+  .achievements {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .achiev {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .achiev-icon { font-size: 1.5rem; }
+  .achiev-name { font-size: 0.8rem; font-weight: 700; }
+  .achiev-desc { font-size: 0.72rem; color: var(--muted); }
+
+  .notif-list { display: flex; flex-direction: column; gap: 12px; }
+  .notif-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 14px;
+    background: var(--surface);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .notif-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .notif-text { font-size: 0.83rem; line-height: 1.5; }
+  .notif-time { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+
+  /* ─── LIBRARY ─── */
+  #page-library {
+    min-height: 100vh; padding-top: 80px;
+  }
+  .library-inner {
+    max-width: 1100px; margin: 0 auto; padding: 40px;
+  }
+  .library-filters {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  .filter-chip {
+    padding: 8px 18px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 0.83rem; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-chip:hover, .filter-chip.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,245,196,0.06);
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .content-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .content-card:hover { transform: translateY(-4px); border-color: rgba(0,245,196,0.2); }
+  .content-thumb {
+    height: 140px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .thumb-video { background: linear-gradient(135deg, #0f1a2e, #1a2540); }
+  .thumb-pdf { background: linear-gradient(135deg, #1a0f2e, #2a1540); }
+  .thumb-quiz { background: linear-gradient(135deg, #0f2e1a, #152540); }
+  .thumb-dl { background: linear-gradient(135deg, #2e1a0f, #402515); }
+
+  .content-thumb .play-btn {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.4);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .content-card:hover .play-btn { opacity: 1; }
+  .play-circle {
+    width: 44px; height: 44px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    color: #000;
+  }
+  .content-info { padding: 18px; }
+  .content-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; color: var(--accent2);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .content-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .content-card p { color: var(--muted); font-size: 0.8rem; }
+  .content-meta {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 12px;
+  }
+  .content-module {
+    font-size: 0.72rem;
+    color: var(--muted);
+    background: var(--surface);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .content-dur { font-size: 0.72rem; color: var(--muted); margin-left: auto; }
+
+  /* ─── MODULES PAGE ─── */
+  #page-modules {
+    min-height: 100vh; padding-top: 80px;
+  }
+  .modules-inner {
+    max-width: 1100px; margin: 0 auto; padding: 40px;
+  }
+  .module-full {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .module-full-header {
+    padding: 24px 28px;
+    display: flex; align-items: center; gap: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .module-full-header:hover { background: rgba(255,255,255,0.02); }
+  .mod-num-big {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent2), #5a41cc);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem; font-weight: 500;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .module-full-header h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    flex: 1;
+  }
+  .module-full-header .mod-theme {
+    font-size: 0.8rem; color: var(--muted); font-style: italic;
+    display: block; margin-top: 2px;
+  }
+  .mod-lessons-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; color: var(--muted);
+  }
+  .chevron {
+    color: var(--muted);
+    transition: transform 0.3s;
+    font-size: 1.2rem;
+  }
+  .module-full.open .chevron { transform: rotate(90deg); }
+
+  .module-full-body {
+    display: none;
+    padding: 0 28px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .module-full.open .module-full-body { display: block; }
+
+  .lesson-list {
+    list-style: none;
+    margin-top: 20px;
+  }
+  .lesson-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(30,45,74,0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lesson-item:last-child { border-bottom: none; }
+  .lesson-item:hover .lesson-title { color: var(--accent); }
+  .lesson-icon {
+    width: 32px; height: 32px;
+    background: var(--surface);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .lesson-title { font-size: 0.9rem; font-weight: 500; flex: 1; }
+  .lesson-dur { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); }
+
+  .extras-row {
+    display: flex; gap: 10px;
+    margin-top: 20px; flex-wrap: wrap;
+  }
+  .extra-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 0.8rem; font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .extra-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── CERTIFICATE ─── */
+  #page-certificate {
+    min-height: 100vh; padding-top: 80px;
+  }
+  .cert-inner {
+    max-width: 900px; margin: 0 auto; padding: 40px;
+  }
+  .cert-preview {
+    background: linear-gradient(135deg, #0a0f1e, #111827);
+    border: 2px solid;
+    border-image: linear-gradient(135deg, var(--accent), var(--accent2)) 1;
+    border-radius: 20px;
+    padding: 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+    margin-bottom: 32px;
+  }
+  .cert-preview::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 50% 0%, rgba(0,245,196,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(123,97,255,0.05) 0%, transparent 60%);
+  }
+  .cert-badge { font-size: 3.5rem; margin-bottom: 20px; position: relative; z-index: 1; }
+  .cert-preview h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem; font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .cert-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 24px;
+    position: relative; z-index: 1;
+  }
+  .cert-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    margin-bottom: 8px;
+    position: relative; z-index: 1;
+  }
+  .cert-details {
+    color: var(--muted); font-size: 0.88rem;
+    margin-bottom: 32px;
+    position: relative; z-index: 1;
+  }
+  .cert-sig {
+    display: flex; justify-content: center; gap: 60px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    position: relative; z-index: 1;
+  }
+  .sig-item { text-align: center; }
+  .sig-line {
+    width: 120px; height: 1px;
+    background: var(--border);
+    margin: 0 auto 8px;
+  }
+  .sig-name { font-size: 0.85rem; font-weight: 700; }
+  .sig-role { font-size: 0.75rem; color: var(--muted); }
+
+  /* ─── QUIZ ─── */
+  #page-quiz {
+    min-height: 100vh; padding-top: 80px;
+  }
+  .quiz-inner {
+    max-width: 700px; margin: 0 auto; padding: 40px;
+  }
+  .quiz-progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    width: 30%;
+    transition: width 0.5s;
+  }
+  .quiz-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+  }
+  .quiz-q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; color: var(--accent);
+    letter-spacing: 0.05em; margin-bottom: 16px;
+  }
+  .quiz-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem; font-weight: 800;
+    margin-bottom: 28px; line-height: 1.4;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 12px; }
+  .quiz-option {
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.92rem;
+    text-align: left;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    color: var(--text);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .option-letter {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; font-weight: 500;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .quiz-option:hover { border-color: var(--accent2); background: rgba(123,97,255,0.06); }
+  .quiz-option:hover .option-letter { background: var(--accent2); color: #fff; }
+  .quiz-option.selected { border-color: var(--accent); background: rgba(0,245,196,0.08); }
+  .quiz-option.selected .option-letter { background: var(--accent); color: #000; }
+
+  .quiz-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 28px;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.83rem;
+  }
+  footer strong { color: var(--accent); }
+
+  /* ─── RESPONSIVE ─── */
+  @media(max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+    .benefits-grid { grid-template-columns: 1fr 1fr; }
+    .modules-grid { grid-template-columns: 1fr; }
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .content-grid { grid-template-columns: 1fr 1fr; }
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+  }
+  @media(max-width: 600px) {
+    .benefits-grid, .content-grid { grid-template-columns: 1fr; }
+    .achievements { grid-template-columns: 1fr; }
+    .section { padding: 60px 20px; }
+    .hero-inner { padding: 40px 20px; }
+  }
+
+  /* ─── PAGE-SPECIFIC OVERRIDES ─── */
+  #page-login.active, #page-dashboard.active, #page-library.active,
+  #page-modules.active, #page-certificate.active, #page-quiz.active {
+    display: flex; flex-direction: column;
+  }
+  #page-login.active { align-items: center; justify-content: center; }
+
+  .page-header {
+    margin-bottom: 36px;
+  }
+  .page-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .page-header p { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">⚡ <span>Vibe</span>Coding</div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')" id="nav-home" class="active">Início</a></li>
+    <li><a href="#" onclick="showPage('modules')" id="nav-modules">Módulos</a></li>
+    <li><a href="#" onclick="showPage('library')" id="nav-library">Biblioteca</a></li>
+    <li><a href="#" onclick="showPage('dashboard')" id="nav-dashboard">Dashboard</a></li>
+    <li><a href="#" onclick="showPage('quiz')" id="nav-quiz">Avaliação</a></li>
+    <li><a href="#" onclick="showPage('certificate')" id="nav-certificate">Certificado</a></li>
+    <li><a href="#" onclick="showPage('login')" id="nav-login" class="nav-cta">Entrar</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero-bg"></div>
+  <div class="grid-bg"></div>
+
+  <div class="hero-inner">
+    <!-- Left -->
+    <div class="hero">
+      <div class="hero-badge">🚀 Novo Paradigma de Desenvolvimento</div>
+      <h1>Curso Básico:<br><em>Vibe Coding</em><br>O Futuro Começa Agora</h1>
+      <p class="hero-desc">
+        Domine a arte de desenvolver guiado por intenção. Aprenda a colaborar com IA de forma estratégica, sem abrir mão da qualidade e da engenharia de verdade.
+      </p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('modules')">▶ Começar Agora</button>
+        <button class="btn-secondary" onclick="showPage('login')">🔐 Entrar</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">5</div>
+          <div class="stat-label">Módulos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">30+</div>
+          <div class="stat-label">Aulas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Online</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right -->
+    <div class="hero-visual">
+      <div class="code-card">
+        <div class="code-bar">
+          <div class="dot r"></div>
+          <div class="dot y"></div>
+          <div class="dot g"></div>
+          <div class="code-file">vibe_coding.py</div>
+        </div>
+        <div class="code-body">
+          <div><span class="c-comment"># Vibe Coding em ação</span></div>
+          <div><span class="c-keyword">from</span> <span class="c-var">ai</span> <span class="c-keyword">import</span> <span class="c-func">claude</span></div>
+          <div>&nbsp;</div>
+          <div><span class="c-keyword">def</span> <span class="c-func">criar_solucao</span><span class="c-var">(intencao):</span></div>
+          <div>&nbsp; &nbsp; <span class="c-comment"># Descreva o que quer</span></div>
+          <div>&nbsp; &nbsp; <span class="c-var">codigo</span> <span class="c-keyword">=</span> <span class="c-func">claude</span><span class="c-var">(intencao)</span></div>
+          <div>&nbsp; &nbsp; <span class="c-comment"># Revise com engenharia</span></div>
+          <div>&nbsp; &nbsp; <span class="c-keyword">return</span> <span class="c-var">validar(</span><span class="c-func">codigo</span><span class="c-var">)</span></div>
+          <div>&nbsp;</div>
+          <div><span class="c-comment"># O dev do futuro = humano + IA</span></div>
+          <div><span class="c-var">resultado</span> <span class="c-keyword">=</span> <span class="c-func">criar_solucao</span><span class="c-var">(</span></div>
+          <div>&nbsp; &nbsp; <span class="c-string">"crie uma API REST robusta"</span></div>
+          <div><span class="c-var">)</span></div>
+        </div>
+      </div>
+      <div class="floating-tag tag1">
+        <div class="tag-icon">⚡</div>
+        <div class="tag-text"><strong>10x mais rápido</strong>Desenvolvimento</div>
+      </div>
+      <div class="floating-tag tag2">
+        <div class="tag-icon">🛡️</div>
+        <div class="tag-text"><strong>Qualidade garantida</strong>Engenharia real</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Benefits -->
+  <div class="section">
+    <div class="section-label">Benefícios</div>
+    <h2 class="section-title">Por que aprender<br>Vibe Coding?</h2>
+    <p class="section-sub">Uma nova forma de desenvolver que combina criatividade humana com poder da IA, sem sacrificar a qualidade.</p>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">⚡</div>
+        <h3>Velocidade Extrema</h3>
+        <p>Reduza o tempo de desenvolvimento em até 10x usando intenção como principal ferramenta de trabalho.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🎯</div>
+        <h3>Democratização</h3>
+        <p>Qualquer pessoa com boa lógica e criatividade pode criar soluções robustas sem anos de prática.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🏗️</div>
+        <h3>Arquitetura Sólida</h3>
+        <p>Aprenda a combinar IA com boas práticas de engenharia para evitar a armadilha da dívida técnica.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🤝</div>
+        <h3>Colaboração Ágil</h3>
+        <p>Integre Vibe Coding com Agile e outros frameworks para governança e qualidade real.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🔮</div>
+        <h3>Futuro do Dev</h3>
+        <p>Entenda o novo papel do desenvolvedor no ecossistema de IA e se posicione à frente.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🎓</div>
+        <h3>Certificação</h3>
+        <p>Receba um certificado digital ao concluir o curso e validar seu aprendizado com projeto prático.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructor -->
+  <div class="section" style="padding-top:0">
+    <div class="section-label">Instrutor</div>
+    <h2 class="section-title">Quem ensina</h2>
+    <div class="instructor-card">
+      <div class="instructor-avatar">👨‍💻</div>
+      <div>
+        <div class="instructor-name">Seu Instrutor</div>
+        <div class="instructor-role">Desenvolvedor & Especialista em IA Aplicada</div>
+        <p class="instructor-bio">
+          Desenvolvedor com experiência prática em Flask, Python e arquiteturas modernas. Apaixonado por explorar a fronteira entre engenharia de software e inteligência artificial, trazendo visão crítica sobre as promessas e perigos do Vibe Coding.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Feito com ⚡ e intenção — <strong>VibeCoding</strong> &copy; 2024 · Todos os direitos reservados
+  </footer>
+</div>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="page-login" class="page">
+  <div class="login-bg"></div>
+  <div class="auth-card">
+    <div class="auth-logo">⚡ VibeCoding</div>
+    <h2>Bem-vindo de volta</h2>
+    <p class="auth-sub">Acesse sua conta para continuar aprendendo</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this, 'login-form')">Entrar</button>
+      <button class="tab-btn" onclick="switchTab(this, 'register-form')">Cadastrar</button>
+    </div>
+
+    <div id="login-form">
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;margin-bottom:16px" onclick="showPage('dashboard')">Entrar na plataforma</button>
+      <div class="form-footer"><a href="#">Esqueci minha senha</a></div>
+      <div class="divider"><div class="divider-line"></div><span class="divider-text">ou</span><div class="divider-line"></div></div>
+      <button class="social-btn">🔵 Continuar com Google</button>
+    </div>
+
+    <div id="register-form" style="display:none">
+      <div class="form-group">
+        <label>Nome completo</label>
+        <input type="text" placeholder="Seu nome">
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" placeholder="Crie uma senha forte">
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center" onclick="showPage('dashboard')">Criar conta grátis</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ DASHBOARD ══════════════ -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard-inner">
+    <div class="dashboard-header">
+      <div class="greeting">// Painel do Aluno</div>
+      <h2>Olá, Dev! 👋</h2>
+      <p>Você está indo bem. Continue de onde parou.</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Main card -->
+      <div>
+        <div class="dash-card" style="margin-bottom:20px">
+          <div class="dash-card-title">Progresso do Curso</div>
+          <div class="progress-ring">
+            <div class="ring-wrap">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle class="ring-bg" cx="40" cy="40" r="35"/>
+                <circle class="ring-fill" cx="40" cy="40" r="35"/>
+              </svg>
+              <div class="ring-text">30%</div>
+            </div>
+            <div class="progress-info">
+              <h3>Módulo 2 em andamento</h3>
+              <p>Promessas e Benefícios — Aula 2 de 4</p>
+              <p style="margin-top:6px; color: var(--accent); font-size:0.8rem;">🔥 3 dias seguidos de estudo!</p>
+            </div>
+          </div>
+          <button class="continue-btn" onclick="showPage('modules')">▶ Continuar do Módulo 2</button>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-title">Conquistas</div>
+          <div class="achievements">
+            <div class="achiev">
+              <div class="achiev-icon">🚀</div>
+              <div>
+                <div class="achiev-name">Primeiro Passo</div>
+                <div class="achiev-desc">Módulo 1 concluído</div>
+              </div>
+            </div>
+            <div class="achiev">
+              <div class="achiev-icon">🔥</div>
+              <div>
+                <div class="achiev-name">Em Chamas</div>
+                <div class="achiev-desc">3 dias seguidos</div>
+              </div>
+            </div>
+            <div class="achiev" style="opacity:0.4">
+              <div class="achiev-icon">🏆</div>
+              <div>
+                <div class="achiev-name">Mestre Vibe</div>
+                <div class="achiev-desc">Complete o curso</div>
+              </div>
+            </div>
+            <div class="achiev" style="opacity:0.4">
+              <div class="achiev-icon">🎓</div>
+              <div>
+                <div class="achiev-name">Certificado</div>
+                <div class="achiev-desc">Avaliação aprovada</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side -->
+      <div>
+        <div class="dash-card" style="margin-bottom:20px">
+          <div class="dash-card-title">Notificações</div>
+          <div class="notif-list">
+            <div class="notif-item">
+              <div class="notif-dot"></div>
+              <div>
+                <div class="notif-text">Nova aula bônus disponível no Módulo 5</div>
+                <div class="notif-time">Há 2 horas</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot"></div>
+              <div>
+                <div class="notif-text">Quiz do Módulo 2 liberado</div>
+                <div class="notif-time">Há 1 dia</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot" style="background:var(--muted)"></div>
+              <div>
+                <div class="notif-text">PDF do Módulo 1 atualizado</div>
+                <div class="notif-time">Há 3 dias</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-title">Acesso Rápido</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="extra-btn" style="width:100%" onclick="showPage('library')">📚 Biblioteca</button>
+            <button class="extra-btn" style="width:100%" onclick="showPage('quiz')">🧪 Avaliação Final</button>
+            <button class="extra-btn" style="width:100%" onclick="showPage('certificate')">🏆 Certificado</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ LIBRARY ══════════════ -->
+<div id="page-library" class="page">
+  <div class="library-inner">
+    <div class="page-header">
+      <div class="section-label">Central de Aprendizado</div>
+      <h2>Biblioteca</h2>
+      <p>Todo o material do curso em um só lugar</p>
+    </div>
+
+    <div class="library-filters">
+      <button class="filter-chip active" onclick="filterContent(this,'all')">🗂 Todos</button>
+      <button class="filter-chip" onclick="filterContent(this,'video')">🎥 Vídeos</button>
+      <button class="filter-chip" onclick="filterContent(this,'pdf')">📄 PDFs</button>
+      <button class="filter-chip" onclick="filterContent(this,'quiz')">🧪 Exercícios</button>
+      <button class="filter-chip" onclick="filterContent(this,'download')">📥 Downloads</button>
+      <button class="filter-chip" onclick="filterContent(this,'summary')">🧠 Resumos</button>
+    </div>
+
+    <div class="content-grid">
+      <div class="content-card" data-type="video">
+        <div class="content-thumb thumb-video">🎬<div class="play-btn"><div class="play-circle">▶</div></div></div>
+        <div class="content-info">
+          <div class="content-type">🎥 Vídeo</div>
+          <h4>O que é Vibe Coding?</h4>
+          <p>Introdução ao conceito e revolução da intenção</p>
+          <div class="content-meta"><span class="content-module">Módulo 1</span><span class="content-dur">12:30</span></div>
+        </div>
+      </div>
+      <div class="content-card" data-type="pdf">
+        <div class="content-thumb thumb-pdf">📄<div class="play-btn"><div class="play-circle">👁</div></div></div>
+        <div class="content-info">
+          <div class="content-type">📄 PDF</div>
+          <h4>Os 5 Atributos-Chave</h4>
+          <p>Material complementar do Módulo 1</p>
+          <div class="content-meta"><span class="content-module">Módulo 1</span><span class="content-dur">8 págs.</span></div>
+        </div>
+      </div>
+      <div class="content-card" data-type="video">
+        <div class="content-thumb thumb-video">🎬<div class="play-btn"><div class="play-circle">▶</div></div></div>
+        <div class="content-info">
+          <div class="content-type">🎥 Vídeo</div>
+          <h4>Velocidade de Desenvolvimento</h4>
+          <p>Como Vibe Coding acelera o fluxo</p>
+          <div class="content-meta"><span class="content-module">Módulo 2</span><span class="content-dur">15:45</span></div>
+        </div>
+      </div>
+      <div class="content-card" data-type="quiz">
+        <div class="content-thumb thumb-quiz">🧪<div class="play-btn"><div class="play-circle">▶</div></div></div>
+        <div class="content-info">
+          <div class="content-type">🧪 Exercício</div>
+          <h4>Prática: Criando Prompts</h4>
+          <p>Exercício prático de engenharia de prompt</p>
+          <div class="content-meta"><span class="content-module">Módulo 2</span><span class="content-dur">20 min</span></div>
+        </div>
+      </div>
+      <div class="content-card" data-type="summary">
+        <div class="content-thumb thumb-pdf" style="background: linear-gradient(135deg,#0f2020,#152530)">🧠<div class="play-btn"><div class="play-circle">👁</div></div></div>
+        <div class="content-info">
+          <div class="content-type">🧠 Resumo</div>
+          <h4>Dívida Técnica no Vibe Coding</h4>
+          <p>Resumo executivo dos principais riscos</p>
+          <div class="content-meta"><span class="content-module">Módulo 3</span><span class="content-dur">5 min</span></div>
+        </div>
+      </div>
+      <div class="content-card" data-type="download">
+        <div class="content-thumb thumb-dl">📥<div class="play-btn"><div class="play-circle">⬇</div></div></div>
+        <div class="content-info">
+          <div class="content-type">📥 Download</div>
+          <h4>Template de Workflow Agile+AI</h4>
+          <p>Modelo pronto para usar no seu time</p>
+          <div class="content-meta"><span class="content-module">Módulo 4</span><span class="content-dur">.xlsx</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MODULES ══════════════ -->
+<div id="page-modules" class="page">
+  <div class="modules-inner">
+    <div class="page-header">
+      <div class="section-label">Conteúdo programático</div>
+      <h2>Módulos do Curso</h2>
+      <p>5 módulos completos do básico ao futuro do desenvolvimento</p>
+    </div>
+
+    <!-- M1 -->
+    <div class="module-full open">
+      <div class="module-full-header" onclick="toggleModule(this)">
+        <div class="mod-num-big">01</div>
+        <div>
+          <h3>Introdução ao Vibe Coding</h3>
+          <span class="mod-theme">Revolução da intenção</span>
+        </div>
+        <span class="mod-lessons-count">4 aulas</span>
+        <span class="chevron">›</span>
+      </div>
+      <div class="module-full-body">
+        <ul class="lesson-list">
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">O que é Vibe Coding</span><span class="lesson-dur">12:30</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Mudança de Paradigma</span><span class="lesson-dur">18:00</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Os 5 Atributos-Chave</span><span class="lesson-dur">22:15</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🧠</div><span class="lesson-title">Resumo e reflexões</span><span class="lesson-dur">5:00</span></li>
+        </ul>
+        <div class="extras-row">
+          <button class="extra-btn">📋 Quiz Rápido</button>
+          <button class="extra-btn">📄 Resumo PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- M2 -->
+    <div class="module-full">
+      <div class="module-full-header" onclick="toggleModule(this)">
+        <div class="mod-num-big">02</div>
+        <div>
+          <h3>Promessas e Benefícios</h3>
+          <span class="mod-theme">O lado "Flow"</span>
+        </div>
+        <span class="mod-lessons-count">4 aulas</span>
+        <span class="chevron">›</span>
+      </div>
+      <div class="module-full-body">
+        <ul class="lesson-list">
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Velocidade de Desenvolvimento</span><span class="lesson-dur">15:45</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Democratização do Código</span><span class="lesson-dur">14:20</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Criatividade e Arquitetura</span><span class="lesson-dur">19:00</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Colaboração Aumentada</span><span class="lesson-dur">11:30</span></li>
+        </ul>
+        <div class="extras-row">
+          <button class="extra-btn">📊 Estudo de Caso</button>
+          <button class="extra-btn">🧪 Exercício Prático</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- M3 -->
+    <div class="module-full">
+      <div class="module-full-header" onclick="toggleModule(this)">
+        <div class="mod-num-big">03</div>
+        <div>
+          <h3>Perigos e Desafios</h3>
+          <span class="mod-theme">O lado "Debt"</span>
+        </div>
+        <span class="mod-lessons-count">5 aulas</span>
+        <span class="chevron">›</span>
+      </div>
+      <div class="module-full-body">
+        <ul class="lesson-list">
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Dívida Técnica Explicada</span><span class="lesson-dur">20:00</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Arquitetura Frankenstein</span><span class="lesson-dur">17:30</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Segurança e Vulnerabilidades</span><span class="lesson-dur">23:00</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Manutenibilidade</span><span class="lesson-dur">14:00</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Testes Frágeis</span><span class="lesson-dur">16:45</span></li>
+        </ul>
+        <div class="extras-row">
+          <button class="extra-btn">✅ Checklist de Riscos</button>
+          <button class="extra-btn">⚠️ Simulação de Erro Real</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- M4 -->
+    <div class="module-full">
+      <div class="module-full-header" onclick="toggleModule(this)">
+        <div class="mod-num-big">04</div>
+        <div>
+          <h3>Vibe Coding + Agile</h3>
+          <span class="mod-theme">Integração estratégica</span>
+        </div>
+        <span class="mod-lessons-count">4 aulas</span>
+        <span class="chevron">›</span>
+      </div>
+      <div class="module-full-body">
+        <ul class="lesson-list">
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">O que é Agile (revisitado)</span><span class="lesson-dur">13:00</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Relação com Vibe Coding</span><span class="lesson-dur">18:00</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Governança e Qualidade</span><span class="lesson-dur">21:00</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Práticas Essenciais</span><span class="lesson-dur">19:30</span></li>
+        </ul>
+        <div class="extras-row">
+          <button class="extra-btn">📋 Template de Workflow</button>
+          <button class="extra-btn">📝 Definition of Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- M5 -->
+    <div class="module-full">
+      <div class="module-full-header" onclick="toggleModule(this)">
+        <div class="mod-num-big">05</div>
+        <div>
+          <h3>Futuro do Desenvolvimento</h3>
+          <span class="mod-theme">Modelo híbrido</span>
+        </div>
+        <span class="mod-lessons-count">4 aulas + bônus</span>
+        <span class="chevron">›</span>
+      </div>
+      <div class="module-full-body">
+        <ul class="lesson-list">
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">O Novo Papel do Dev</span><span class="lesson-dur">25:00</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Engenharia como Escudo</span><span class="lesson-dur">20:00</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Dívida de IA</span><span class="lesson-dur">18:30</span></li>
+          <li class="lesson-item"><div class="lesson-icon">🎬</div><span class="lesson-title">Equilíbrio Flow vs Debt</span><span class="lesson-dur">22:00</span></li>
+          <li class="lesson-item" style="border:1px solid rgba(0,245,196,0.2);border-radius:8px;padding:12px;background:rgba(0,245,196,0.04)">
+            <div class="lesson-icon" style="background:rgba(0,245,196,0.15)">⭐</div>
+            <span class="lesson-title" style="color:var(--accent)">BÔNUS — Visão Futurista</span>
+            <span class="lesson-dur" style="color:var(--accent)">30:00</span>
+          </li>
+        </ul>
+        <div class="extras-row">
+          <button class="extra-btn" onclick="showPage('certificate')">🏆 Certificado Final</button>
+          <button class="extra-btn" onclick="showPage('quiz')">📝 Avaliação Final</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ QUIZ ══════════════ -->
+<div id="page-quiz" class="page">
+  <div class="quiz-inner">
+    <div class="page-header">
+      <div class="section-label">Avaliação Final</div>
+      <h2>Quiz Geral</h2>
+      <p>Teste seu conhecimento e libere o certificado</p>
+    </div>
+
+    <div class="quiz-progress-bar">
+      <div class="quiz-progress-fill" id="quiz-bar"></div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-q-num" id="quiz-q-num">// Pergunta 01 de 05</div>
+      <h3 id="quiz-question">O que melhor descreve o conceito de "Vibe Coding"?</h3>
+      <div class="quiz-options" id="quiz-options">
+        <button class="quiz-option" onclick="selectOption(this)">
+          <div class="option-letter">A</div>
+          Escrever código usando apenas feeling sem planejamento
+        </button>
+        <button class="quiz-option" onclick="selectOption(this)">
+          <div class="option-letter">B</div>
+          Desenvolvimento guiado por intenção com colaboração de IA
+        </button>
+        <button class="quiz-option" onclick="selectOption(this)">
+          <div class="option-letter">C</div>
+          Programar ouvindo música para aumentar criatividade
+        </button>
+        <button class="quiz-option" onclick="selectOption(this)">
+          <div class="option-letter">D</div>
+          Metodologia ágil focada em bem-estar do desenvolvedor
+        </button>
+      </div>
+      <div class="quiz-nav">
+        <button class="btn-secondary" onclick="prevQuestion()">← Anterior</button>
+        <button class="btn-primary" onclick="nextQuestion()">Próxima →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CERTIFICATE ══════════════ -->
+<div id="page-certificate" class="page">
+  <div class="cert-inner">
+    <div class="page-header">
+      <div class="section-label">Conquista</div>
+      <h2>Seu Certificado</h2>
+      <p>Gerado automaticamente ao concluir o curso</p>
+    </div>
+
+    <div class="cert-preview">
+      <div class="cert-badge">🏆</div>
+      <h2>CERTIFICADO DE CONCLUSÃO</h2>
+      <div class="cert-title">Vibe Coding<br>O Futuro do Desenvolvimento</div>
+      <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;position:relative;z-index:1">Certificamos que</p>
+      <div class="cert-name">Seu Nome Aqui</div>
+      <div class="cert-details">
+        concluiu com êxito o curso <strong style="color:var(--text)">Curso Básico: Vibe Coding</strong><br>
+        com carga horária de <strong style="color:var(--text)">8 horas</strong> · <span id="cert-date"></span>
+      </div>
+      <div class="cert-sig">
+        <div class="sig-item">
+          <div class="sig-line"></div>
+          <div class="sig-name">Instrutor</div>
+          <div class="sig-role">Desenvolvedor & Especialista IA</div>
+        </div>
+        <div class="sig-item">
+          <div class="sig-line"></div>
+          <div class="sig-name">VibeCoding</div>
+          <div class="sig-role">Plataforma de Ensino</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center">
+      <button class="btn-primary" style="margin:0 auto;display:inline-flex">⬇ Baixar Certificado PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Page navigation
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const navEl = document.getElementById('nav-' + id);
+  if(navEl) navEl.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// Tab switching (login/register)
+function switchTab(btn, formId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById(formId).style.display = 'block';
+}
+
+// Module accordion
+function toggleModule(header) {
+  const card = header.closest('.module-full');
+  card.classList.toggle('open');
+}
+
+// Library filter
+function filterContent(chip, type) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  document.querySelectorAll('.content-card').forEach(card => {
+    if(type === 'all' || card.dataset.type === type) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// Quiz
+const questions = [
+  { q: 'O que melhor descreve o conceito de "Vibe Coding"?', opts: ['Escrever código usando apenas feeling sem planejamento','Desenvolvimento guiado por intenção com colaboração de IA','Programar ouvindo música para aumentar criatividade','Metodologia ágil focada em bem-estar do desenvolvedor'] },
+  { q: 'Qual é o principal risco da "Arquitetura Frankenstein"?', opts: ['Código visualmente feio','Partes incompatíveis que formam um sistema frágil','Uso excessivo de IA','Lentidão no desenvolvimento'] },
+  { q: 'Como o Vibe Coding se relaciona com Agile?', opts: ['São metodologias opostas','Vibe Coding substitui completamente o Agile','Podem ser integrados para melhor governança','Agile proíbe o uso de IA'] },
+  { q: 'O que é "Dívida de IA" no contexto do Módulo 5?', opts: ['Custo das APIs de IA','Código gerado por IA que acumula problemas de manutenção','Taxa de assinatura das ferramentas','Tempo gasto aprendendo IA'] },
+  { q: 'Qual o novo papel do desenvolvedor no modelo híbrido?', opts: ['Apenas revisar código de IA','Ser substituído completamente pela IA','Atuar como engenheiro e arquiteto estratégico','Gerenciar apenas banco de dados'] }
+];
+
+let currentQ = 0;
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('quiz-q-num').textContent = `// Pergunta ${String(currentQ+1).padStart(2,'0')} de ${questions.length}`;
+  document.getElementById('quiz-question').textContent = q.q;
+  const opts = document.getElementById('quiz-options');
+  const letters = ['A','B','C','D'];
+  opts.innerHTML = q.opts.map((o,i) =>
+    `<button class="quiz-option" onclick="selectOption(this)"><div class="option-letter">${letters[i]}</div>${o}</button>`
+  ).join('');
+  document.getElementById('quiz-bar').style.width = ((currentQ/questions.length)*100)+'%';
+}
+
+function selectOption(btn) {
+  document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+function nextQuestion() {
+  if(currentQ < questions.length-1) { currentQ++; renderQuestion(); }
+  else { alert('Parabéns! Quiz concluído! 🎉 Seu certificado está liberado.'); showPage('certificate'); }
+}
+function prevQuestion() {
+  if(currentQ > 0) { currentQ--; renderQuestion(); }
+}
+
+renderQuestion();
+
+// Certificate date
+const d = new Date();
+document.getElementById('cert-date').textContent = d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+</script>
+
+</body>
+</html>
