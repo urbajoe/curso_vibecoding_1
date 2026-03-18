@@ -1008,11 +1008,7 @@
   }
 
   /* ─── PAGE-SPECIFIC OVERRIDES ─── */
-  #page-login.active, #page-dashboard.active, #page-library.active,
-  #page-modules.active, #page-certificate.active, #page-quiz.active {
-    display: flex; flex-direction: column;
-  }
-  #page-login.active { align-items: center; justify-content: center; }
+  #page-login.active { display: flex !important; flex-direction: column; align-items: center; justify-content: center; }
 
   .page-header {
     margin-bottom: 36px;
@@ -1185,17 +1181,24 @@
 
     <div id="login-form">
       <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" placeholder="seu@email.com">
+        <label>Login</label>
+        <input type="text" id="campo-login" placeholder="aluno">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" placeholder="••••••••">
+        <input type="text" id="campo-senha" placeholder="123456">
       </div>
-      <button class="btn-primary" style="width:100%;justify-content:center;margin-bottom:16px" onclick="showPage('dashboard')">Entrar na plataforma</button>
+      <button class="btn-primary" style="width:100%;justify-content:center;margin-bottom:16px" onclick="
+        var u=document.getElementById('campo-login').value.trim();
+        var p=document.getElementById('campo-senha').value.trim();
+        if(u==='aluno' && p==='123456'){ showPage('dashboard'); }
+        else{ document.getElementById('erro-login').style.display='block'; }
+      ">Entrar na plataforma</button>
+      <div id="erro-login" style="display:none;color:#ff6b6b;font-size:0.82rem;text-align:center;margin-bottom:10px">Login ou senha incorretos.</div>
       <div class="form-footer"><a href="#">Esqueci minha senha</a></div>
-      <div class="divider"><div class="divider-line"></div><span class="divider-text">ou</span><div class="divider-line"></div></div>
-      <button class="social-btn" onclick="showPage('dashboard')" style="background:rgba(0,245,196,0.08);border-color:rgba(0,245,196,0.3);color:var(--accent);font-weight:700;">⚡ Entrar com conta Demo</button>
+      <div style="margin-top:20px;text-align:center">
+        <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:#3a4a60;">demo → login: aluno · senha: 123456</span>
+      </div>
     </div>
 
     <div id="register-form" style="display:none">
@@ -1625,12 +1628,27 @@
 </div>
 
 <script>
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const senha = document.getElementById('login-senha').value;
+  if(email === 'aluno' && senha === '123456') {
+    showPage('dashboard');
+  } else {
+    alert('Credenciais inválidas.\n\nUse: login = aluno | senha = 123456');
+  }
+}
+
 // Page navigation
 function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  const navEl = document.getElementById('nav-' + id);
+  var pg = document.getElementById('page-' + id);
+  pg.style.display = (id === 'login') ? 'flex' : 'block';
+  pg.classList.add('active');
+  var navEl = document.getElementById('nav-' + id);
   if(navEl) navEl.classList.add('active');
   window.scrollTo(0,0);
 }
